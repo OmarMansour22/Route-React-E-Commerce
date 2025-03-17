@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.active{
+  @apply  bg-main text-white;
+}
+
+
+@theme {
+    --shadow-top-light: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    --shadow-top-dark: 0 -10px 50px rgba(0,150,255, .1);
+    --shadow-card: rgba(0, 0, 0, 0.2) 3px 3px 8px, rgba(255, 255, 255, 0.6) -12px -12px 8px;
+    --shadow-darkCard:  0px 4px 12px rgba(0, 150, 255, 0.15),
+    0px 2px 6px rgba(0, 0, 0, 0.4);
+
+    --color-main: #2571f4;
+    --color-secondary: #64B5F6;
+    --color-hover: #42A5F5;
+}
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+/* Light Mode Scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1; /* thumb color, track color */
+}
+
+/* For WebKit Browsers */
+::-webkit-scrollbar {
+  width: 8px; /* Adjust scrollbar width */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Light mode track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Light mode thumb */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Dark Mode Scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #2d2d2d; /* Dark mode track */
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #555; /* Dark mode thumb */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
