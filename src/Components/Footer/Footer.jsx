@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Logo from '../Logo/Logo';
 
 export default function Footer() {
@@ -25,8 +25,6 @@ export default function Footer() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  let location = useLocation();
-  let currentPage = location.pathname;
 
   return (
     <footer className="bg-gray-100 dark:bg-neutral-900">

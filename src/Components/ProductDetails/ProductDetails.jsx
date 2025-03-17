@@ -98,11 +98,12 @@ export default function ProductDetails() {
                 { productId: id },
                 { headers: { token: localStorage.getItem("token") } }
             );
-            toast.success(data.message, { autoClose: 2000, closeOnClick: true });
-            // toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
+            if (localStorage.getItem("theme") == "light") toast.success(data.message, { autoClose: 2000, closeOnClick: true });
+            else toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
             setCartCount(data.numOfCartItems);
         } catch (error) {
-            toast.error("Failed to add product to cart");
+            if (localStorage.getItem("theme") == "light") toast.error("Failed to add product to cart", { autoClose: 2000, closeOnClick: true });
+            else toast.error("Failed to add product to cart", { autoClose: 2000, closeOnClick: true, theme: dark });
         } finally {
             setDisable(false);
         }
@@ -139,11 +140,12 @@ export default function ProductDetails() {
                     }
                 }
             )
-            toast.success(data.message, { autoClose: 2000, closeOnClick: true });
-            // toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
+            if (localStorage.getItem("theme") == "light") toast.success(data.message, { autoClose: 2000, closeOnClick: true });
+            else toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
         } catch (error) {
             setIsFavourite(false)
-            toast.error(error, { autoClose: 2000, closeOnClick: true });
+            if (localStorage.getItem("theme") == "light") toast.error(error, { autoClose: 2000, closeOnClick: true });
+            else toast.error(error, { autoClose: 2000, closeOnClick: true, theme: "dark" });
         }
     }
     async function removeFromFavourite() {
@@ -156,11 +158,12 @@ export default function ProductDetails() {
                     }
                 }
             )
-            toast.success(data.message, { autoClose: 2000, closeOnClick: true });
-            // toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
+            if (localStorage.getItem("theme") == "light") toast.success(data.message, { autoClose: 2000, closeOnClick: true });
+            else toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
         } catch (error) {
             setIsFavourite(true);
-            toast.error(error, { autoClose: 2000, closeOnClick: true });
+            if (localStorage.getItem("theme") == "light") toast.error(error, { autoClose: 2000, closeOnClick: true });
+            else toast.error(error, { autoClose: 2000, closeOnClick: true, theme: "dark" });
         }
 
     }

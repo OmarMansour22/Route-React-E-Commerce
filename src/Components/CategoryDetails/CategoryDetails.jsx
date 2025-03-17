@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Product from '../Product/Product';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import NoAvailableProducts from '../NoAvailableProducts/NoAvailableProducts';

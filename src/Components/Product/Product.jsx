@@ -19,11 +19,12 @@ export default function Product({ product, status, onWishlistUpdate }) {
                 { productId: product.id },
                 { headers: { token: localStorage.getItem("token") } }
             );
-            toast.success(data.message, { autoClose: 2000, closeOnClick: true });
-            // toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
+            if(localStorage.getItem("theme")=="light") toast.success(data.message, { autoClose: 2000, closeOnClick: true });
+            else toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
             setCartCount(data.numOfCartItems);
         } catch (error) {
-            toast.error("Failed to add product to cart" + error);
+            if(localStorage.getItem("theme")=="light") toast.error("Failed to add product to cart" + error);
+            else toast.error("Failed to add product to cart" + error, {autoClose:2000, closeOnClick: true, theme: "dark"});
         } finally {
             setDisable(false);
         }
@@ -38,8 +39,8 @@ export default function Product({ product, status, onWishlistUpdate }) {
                 }
             }
         )
-        toast.success(data.message, { autoClose: 2000, closeOnClick: true });
-        // toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
+        if(localStorage.getItem("theme")=="light") toast.success(data.message, { autoClose: 2000, closeOnClick: true });
+        else toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
         if (onWishlistUpdate) onWishlistUpdate();
     }
 
@@ -52,8 +53,8 @@ export default function Product({ product, status, onWishlistUpdate }) {
                 }
             }
         )
-        toast.success(data.message, { autoClose: 2000, closeOnClick: true });
-        // toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
+        if(localStorage.getItem("theme")=="light") toast.success(data.message, { autoClose: 2000, closeOnClick: true });
+        else toast.success(data.message, { autoClose: 2000, closeOnClick: true, theme: "dark" });
         console.log(data);
         if (onWishlistUpdate) onWishlistUpdate();
     }

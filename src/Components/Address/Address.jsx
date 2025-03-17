@@ -3,7 +3,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import ScrollToTop from '../ScrollToTop/ScrollToTop';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 
 export default function Address() {

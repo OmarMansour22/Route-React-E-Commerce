@@ -10,7 +10,9 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
     let warned = false;
 
     function limitWarning() {
-        toast.warn(`Oops! You can only purchase ${count} ${product.product.title} at most.`, {autoClose: 2000})
+        
+        if(localStorage.getItem("theme")=="light")toast.warn(`Oops! You can only purchase ${count} ${product.product.title} at most.`, {autoClose: 2000})
+        else toast.warn(`Oops! You can only purchase ${count} ${product.product.title} at most.`, {autoClose: 2000, closeOnClick:true ,theme:"dark"})
         warned = true;
     }
 
