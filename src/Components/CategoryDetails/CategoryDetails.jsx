@@ -1,13 +1,13 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Product from '../Product/Product';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import NoAvailableProducts from '../NoAvailableProducts/NoAvailableProducts';
 
 export default function CategoryDetails() {
 
-    let categoryId = location.pathname.split('/')[2];
+    let {categoryId} = useParams();
     const [categorieResponse, setCategorieResponse] = useState([])
     const [response, setResponse] = useState(false)
     const [favProducts, setFavProducts] = useState(new Set());
@@ -50,7 +50,7 @@ export default function CategoryDetails() {
         <>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
                 {categorieResponse.map((product) => {
-                    const isFav = favProducts?.has(product.id) ? 1 : 0;
+                    const isFav = favProducts?.has(product.id) ? 1 : 0;                    
                     return <Product product={product} status={isFav} key={product.id}></Product>
                 })}
             </div>

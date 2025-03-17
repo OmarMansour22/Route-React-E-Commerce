@@ -1,9 +1,8 @@
 import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 export default function CategorieSlider() {
 
@@ -45,7 +44,7 @@ export default function CategorieSlider() {
 
     async function CategorieSliderResponse() {
         let response = await axios.get("https://ecommerce.routemisr.com/api/v1/categories");
-        setCategorie(response.data.data);
+        setCategorie(response?.data?.data);
         setResponse(true);
     }
 
@@ -64,8 +63,8 @@ export default function CategorieSlider() {
             <div className='dark:bg-black'> 
                 <h2 className='text-3xl font-semibold'>Shop Popular Categories</h2>
                 <Slider {...settings} className='mb-16'>
-                    {categorie.filter(product => product != []).map((product, index) => (
-                        <div key={index} className='w-full my-12 p-3 shadow-card dark:shadow-darkCard dark:border dark:border-gray-700 relative overflow-hidden group rounded-lg cursor-pointer'>
+                    {categorie?.filter(product => product != []).map((product) => (
+                        <div key={product._id} className='w-full my-12 p-3 shadow-card dark:shadow-darkCard dark:border dark:border-gray-700 relative overflow-hidden group rounded-lg cursor-pointer'>
                             <button
                                 onMouseDown={(e) => {
                                     dragCoords.current.startX = e.clientX;

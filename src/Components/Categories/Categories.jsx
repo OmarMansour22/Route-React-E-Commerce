@@ -11,7 +11,7 @@ export default function Categories() {
   async function getAllCategories() {
     try {
       let response = await axios.get("https://ecommerce.routemisr.com/api/v1/categories");
-      setCategories(response.data.data || []);
+      setCategories(response?.data?.data || []);
     } catch (err) {
       setError("Failed to fetch categories. Please try again later.");
     } finally {

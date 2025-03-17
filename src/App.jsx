@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { RouterProvider, createHashRouter } from 'react-router-dom'
 import Layout from './Components/Layout/Layout'
 import Cart from './Components/Cart/Cart'
 import WishList from './Components/WishList/WishList'
@@ -24,7 +24,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 
 function App() {
 
-  const router = createBrowserRouter([
+  const router = createHashRouter([
     {
       path: '', element: <Layout />, children: [
         { index: true, element: <Home /> },
