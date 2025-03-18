@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-export default function CartProduct({ product, removeItem, updateProductNumber }) {
+export default function CartProduct({ product, removeItem, updateProductNumber, checkPrice }) {
     const [count, setCount] = useState(Math.min(product?.count, product?.product?.quantity));
     const [productLimit, setProductLimit] = useState(false);
 
@@ -18,17 +18,23 @@ export default function CartProduct({ product, removeItem, updateProductNumber }
         warned = true;
     }
 
-    const { data: latestProduct } = useQuery(`productPrice${product?.product?.id}`,
+    const { data: latestProduct, refetch } = useQuery(`productPrice${product?.product?.id}`,
         async () => {
             const response = await axios.get(`https://ecommerce.routemisr.com/api/v1/products/${product?.product?.id}`);
-            return response.data;
+            return response.data.data;
         },
         {
-            refetchInterval: 60000,
+            refetchInterval: 60000 * 10,
+            refetchOnMount: false,
+            refetchOnWindowFocus: false,
             enabled: !!product?.product?.id,
             onSuccess: (updatedProduct) => {
+                console.log(updatedProduct?.price);
+                console.log(product?.price, "product?.price");
+
                 if (updatedProduct?.price !== product?.price) {
                     toast.info(`Price updated: ${updatedProduct?.price} EGP`, { autoClose: 2000 });
+                    updateProductNumber(product?.product?.id, count);
                 }
             },
         }
@@ -40,6 +46,11 @@ export default function CartProduct({ product, removeItem, updateProductNumber }
             updateProductNumber(product?.product?.id, product?.product?.quantity);
         }
     }, []);
+
+    useEffect(() => {
+        if (checkPrice) refetch();
+    }, [checkPrice])
+
 
     return (
         <>

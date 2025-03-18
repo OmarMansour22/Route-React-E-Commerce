@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import CartProduct from '../CartProduct/CartProduct';
 import { CartCountContext } from '../../Context/CartCountContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from 'react-query';
 import ScrollToTop from '../ScrollToTop/ScrollToTop';
 
@@ -11,6 +11,8 @@ import ScrollToTop from '../ScrollToTop/ScrollToTop';
 export default function Cart() {
   const [totalCartPrice, setTotalCartPrice] = useState();
   const { cartCount, setCartCount } = useContext(CartCountContext);
+  const [checkPrice, setCheckPrice] = useState(0)
+  const navigate = useNavigate();
 
 
   function getUserCart() {
@@ -26,7 +28,7 @@ export default function Cart() {
   })
 
   useEffect(() => {
-    if (cartProducts) setTotalCartPrice(cartProducts.totalCartPrice)
+    if (cartProducts) setTotalCartPrice(cartProducts?.totalCartPrice)
   }, [cartProducts])
 
 
@@ -108,6 +110,11 @@ export default function Cart() {
 
   const isFetchingCart = isFetchingUserCart || removeItemMutation.isLoading || clearCartMutation.isLoading || updateProductNumberMutation.isLoading;
 
+  const handleCheckout = async () => {
+    await refetchUserCart();
+    navigate(`/address/${cartProducts?._id}`);
+    setCheckPrice(0);
+  };
 
   if (isLoadingUserCart) {
     return <LoadingScreen />;
@@ -127,7 +134,7 @@ export default function Cart() {
           }} className={`text-red-500 dark:border-red-600 text-xl border px-5 py-1 rounded-md ms-auto me-1 md:me-10 block hover:bg-red-500 hover:text-white duration-300 ${isFetchingCart ? 'cursor-auto' : 'cursor-pointer'}`}>Clear Cart</button>
           <div className='w-full md:px-10'>
             {cartProducts?.products?.map((product) => {
-              return <CartProduct key={product?._id} product={product} removeItem={removeItem} updateProductNumber={updateProductNumber} />
+              return <CartProduct key={product?._id} product={product} removeItem={removeItem} updateProductNumber={updateProductNumber} checkPrice={checkPrice} />
             })}
           </div>
           <div className="mt-10 md:mx-10 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-100 dark:bg-neutral-800 p-6 rounded-lg shadow-md">
@@ -139,14 +146,16 @@ export default function Cart() {
               </span>
             </p>
 
-            <Link
-              to={'/address/' + cartProducts?._id}
+            <button
+              onClick={() => { setCheckPrice(1), handleCheckout() }}
+              disabled={isFetchingCart}
               className={`text-white text-xl font-medium px-6 py-3 rounded-lg shadow-md transition-all duration-300 ${!isFetchingCart
                 ? 'bg-main hover:bg-blue-800 cursor-pointer'
                 : 'bg-gray-400 cursor-not-allowed pointer-events-none'
-                }`}>
+                }`}
+            >
               Checkout
-            </Link>
+            </button>
           </div>
 
         </div>
