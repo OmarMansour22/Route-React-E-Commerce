@@ -157,7 +157,7 @@ export default function Address() {
             )}
 
             {selectedAddress && !isNewAddress && (
-                <button onClick={handleCheckout} className="w-full mt-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+                <button onClick={handleCheckout} className="w-full mt-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 hover:cursor-pointer transition">
                     Checkout
                 </button>
             )}
