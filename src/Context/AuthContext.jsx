@@ -14,7 +14,7 @@ export default function AuthContextProvider({ children }) {
                     token: localStorage.getItem("token")
                 }
             }).then(function (response) {
-                console.log("Good");
+                // console.log("Good");
                 setIsUserLoggedIn(true)
             }).catch(function (error) {
                 // console.log(error)
@@ -24,7 +24,6 @@ export default function AuthContextProvider({ children }) {
         if (localStorage.getItem("token")) {
             verifyUserToken();
         }
-        console.log("a");
     }, [])
 
 
