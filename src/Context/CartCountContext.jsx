@@ -1,13 +1,15 @@
 import axios from 'axios';
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { AuthContext } from './AuthContext';
 
 
 export const CartCountContext = createContext(0);
 
 
 export default function CartCountContextProvider({ children }) {
-
+  const { isUserLoggedIn } = useContext(AuthContext);
   const [cartCount, setCartCount] = useState(0);
+
   async function getUserCart() {
     try {
       let { data } = await axios.get("https://ecommerce.routemisr.com/api/v1/cart", {
@@ -24,13 +26,13 @@ export default function CartCountContextProvider({ children }) {
   }
 
   useEffect(() => {
-    getUserCart();
+    if (isUserLoggedIn) getUserCart();
   }, [])
 
 
 
   return (
-    <CartCountContext.Provider value={{cartCount,setCartCount}}>
+    <CartCountContext.Provider value={{ cartCount, setCartCount }}>
       {children}
     </CartCountContext.Provider>
   )

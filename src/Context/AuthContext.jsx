@@ -17,7 +17,7 @@ export default function AuthContextProvider({ children }) {
                 // console.log("Good");
                 setIsUserLoggedIn(true)
             }).catch(function (error) {
-                // console.log(error)
+                console.log(error)
                 setIsUserLoggedIn(false)
             });
         }
