@@ -54,7 +54,7 @@ export default function Products() {
             <input
                 type="text"
                 placeholder="Search products..."
-                className="w-full p-2 mb-4 border rounded-lg border-gray-500 outline-gray-700 text-gray-800"
+                className="w-full p-2 mb-4 border rounded-lg border-gray-500 outline-gray-700 text-gray-800 dark:text-white"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
