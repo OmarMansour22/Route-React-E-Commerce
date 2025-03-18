@@ -39,15 +39,11 @@ export default function Register() {
     setIsError(false);
     let response = axios.post("https://ecommerce.routemisr.com/api/v1/auth/signup", formik.values)
       .then(function (response) {
-        // console.log(response);
-        // console.log(response.data.message);
         setIsLoading(false);
         navigate("/login")
 
       })
       .catch(function (error) {
-        // console.log(error);
-        // console.log(error.response.data.message);
         setIsLoading(false);
         setIsError(true);
         setIsErrorValue(error.response.data.message);

@@ -1,13 +1,11 @@
 import axios from 'axios'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
+import { useQuery } from 'react-query';
 
 export default function CategorieSlider() {
-
-    const [categorie, setCategorie] = useState([]);
-    const [response, setResponse] = useState(false);
     const dragCoords = useRef({ startX: 0, startY: 0 });
     let navigate = useNavigate();
 
@@ -19,7 +17,7 @@ export default function CategorieSlider() {
         autoplay: true,
         autoplaySpeed: 2000,
         pauseOnHover: true,
-        arrows:false,
+        arrows: false,
         responsive: [
             {
                 breakpoint: 1024,
@@ -42,29 +40,27 @@ export default function CategorieSlider() {
         ]
     };
 
-    async function CategorieSliderResponse() {
-        let response = await axios.get("https://ecommerce.routemisr.com/api/v1/categories");
-        setCategorie(response?.data?.data);
-        setResponse(true);
+    function fetchCategories() {
+        return axios.get("https://ecommerce.routemisr.com/api/v1/categories").then(response => response.data.data);
     }
 
+    const { data: categories, isLoading } = useQuery("categories", fetchCategories, {
+        refetchInterval: 60000
+    });
 
-    useEffect(() => {
-        CategorieSliderResponse();
-    }, [])
 
-    if (!response) {
+    if (isLoading) {
         return <LoadingScreen />
     }
 
 
     return (
         <>
-            <div className='dark:bg-black'> 
+            <div className='dark:bg-black'>
                 <h2 className='text-3xl font-semibold'>Shop Popular Categories</h2>
                 <Slider {...settings} className='mb-16'>
-                    {categorie?.filter(product => product != []).map((product) => (
-                        <div key={product._id} className='w-full my-12 p-3 shadow-card dark:shadow-darkCard dark:border dark:border-gray-700 relative overflow-hidden group rounded-lg cursor-pointer'>
+                    {categories?.filter(product => product != []).map((product) => (
+                        <div key={product?._id} className='w-full my-12 p-3 shadow-card dark:shadow-darkCard dark:border dark:border-gray-700 relative overflow-hidden group rounded-lg cursor-pointer'>
                             <button
                                 onMouseDown={(e) => {
                                     dragCoords.current.startX = e.clientX;
@@ -94,10 +90,9 @@ export default function CategorieSlider() {
                                 }}
                                 className='w-full cursor-pointer mx-auto text-center focus:outline-none focus:ring-0 focus:ring-transparent'
                             >
-                                <img src={product.image} alt="" className='size-100 mx-auto object-cover object-center' />
-                                <h3 className='font-bold text-xl my-1'>{product.name}</h3>
+                                <img src={product?.image} alt="" className='size-100 mx-auto object-cover object-center' />
+                                <h3 className='font-bold text-xl my-1'>{product?.name}</h3>
                             </button>
-
                         </div>
                     ))}
                 </Slider>

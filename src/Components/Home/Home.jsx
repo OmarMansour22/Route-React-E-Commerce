@@ -3,51 +3,50 @@ import Product from '../Product/Product';
 import axios from 'axios';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import CategorieSlider from '../CategorySlider/CategorieSlider';
+import { useQuery } from 'react-query';
+import ScrollToTop from '../ScrollToTop/ScrollToTop';
 
 
 export default function Home() {
 
-  const [products, setProducts] = useState(null)
   const [favProducts, setFavProducts] = useState(new Set())
 
-  async function getProducts() {
-    let response = await axios.get("https://ecommerce.routemisr.com/api/v1/products")
-    console.log(response.data.data);
-    console.log("response");
-    setProducts(response.data.data);
+  function getProducts() {
+    return axios.get("https://ecommerce.routemisr.com/api/v1/products").then(response => response.data.data);
   }
 
-  async function favourite() {
-    let { data } = await axios.get("https://ecommerce.routemisr.com/api/v1/wishlist",
-      {
-        headers: {
-          token: localStorage.getItem("token")
-        }
-      }
-    )
-    console.log(data.data);
-    const favIds = new Set(data.data?.map(fav => fav._id) || []);
-    setFavProducts(favIds);
-    console.log("data");
+  let { data: products, isLoading: isLoadingProducts } = useQuery('products', getProducts, {
+    refetchInterval: 60000
+  })
+
+  function favourite() {
+    return axios.get("https://ecommerce.routemisr.com/api/v1/wishlist", {
+      headers: { token: localStorage.getItem("token") },
+    }).then(response => response.data.data);
   }
 
+  let { data: favouriteData, isLoading: isLoadingFavourite } = useQuery('favourite', favourite, {
+    refetchInterval: 60000
+  })
 
   useEffect(() => {
-    getProducts();
-    favourite(); 
-  }, [])
+    if (favouriteData) {
+      setFavProducts(new Set(favouriteData?.map((fav) => fav._id) || []));
+    }
+  }, [favouriteData]);
 
-  if (!products) {
+
+  if (isLoadingFavourite || isLoadingProducts) {
     return <LoadingScreen />
   }
-  
+
   return (
     <>
-    
+      <ScrollToTop />
       <CategorieSlider />
       <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 dark:bg-black">
         {products?.map((product) => {
-          const isFav = favProducts?.has(product.id) ? 1 : 0;
+          const isFav = favProducts?.has(product?.id) ? 1 : 0;          
           return <Product product={product} status={isFav} key={product.id}></Product>
         })}
       </div>

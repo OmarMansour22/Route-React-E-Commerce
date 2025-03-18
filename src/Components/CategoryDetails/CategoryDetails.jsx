@@ -4,54 +4,55 @@ import { useParams } from 'react-router-dom';
 import Product from '../Product/Product';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import NoAvailableProducts from '../NoAvailableProducts/NoAvailableProducts';
+import { useQuery } from 'react-query';
+import ScrollToTop from '../ScrollToTop/ScrollToTop';
 
 export default function CategoryDetails() {
 
-    let {categoryId} = useParams();
-    const [categorieResponse, setCategorieResponse] = useState([])
-    const [response, setResponse] = useState(false)
+    let { categoryId } = useParams();
     const [favProducts, setFavProducts] = useState(new Set());
 
-    async function getCategoryDetails() {
-        let response = await axios.get("https://ecommerce.routemisr.com/api/v1/products?category[in]=" + categoryId)
-        setCategorieResponse(response.data.data);
-        console.log(response.data.data);
-        setResponse(true);
+
+    function getCategoryDetails() {
+        return axios.get("https://ecommerce.routemisr.com/api/v1/products?category[in]=" + categoryId).then(response => response.data.data);
     }
 
-    async function favourite() {
-        let { data } = await axios.get("https://ecommerce.routemisr.com/api/v1/wishlist",
-            {
-                headers: {
-                    token: localStorage.getItem("token")
-                }
-            }
-        )
-        console.log(data.data);
-        const favIds = new Set(data.data?.map(fav => fav._id) || []);
-        setFavProducts(favIds);
-        console.log("data");
+    let { data: categorieResponse, isLoading: isLoadingCategoryDetails } = useQuery('categoryDetails'+categoryId, getCategoryDetails, {
+        refetchInterval: 60000,
+    })
+
+
+    function favourite() {
+        return axios.get("https://ecommerce.routemisr.com/api/v1/wishlist", {
+            headers: { token: localStorage.getItem("token") },
+        }).then(response => response.data.data);
     }
 
+    let { data: favouriteData, isLoading: isLoadingFavourite } = useQuery('favourite', favourite, {
+        refetchInterval: 60000
+    })
 
     useEffect(() => {
-        getCategoryDetails();
-        favourite();
-    }, [])
+        if (favouriteData) {
+            setFavProducts(new Set(favouriteData?.map((fav) => fav._id) || []));
+        }
+    }, [favouriteData]);
 
-    if (!response) {
+
+    if (isLoadingCategoryDetails || isLoadingFavourite) {
         return <LoadingScreen />
     }
-    else if (categorieResponse.length == 0) {
+    else if (categorieResponse?.length == 0) {
         return <NoAvailableProducts />
     }
 
     return (
         <>
+            <ScrollToTop />
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
-                {categorieResponse.map((product) => {
-                    const isFav = favProducts?.has(product.id) ? 1 : 0;                    
-                    return <Product product={product} status={isFav} key={product.id}></Product>
+                {categorieResponse?.map((product) => {
+                    const isFav = favProducts?.has(product.id) ? 1 : 0;
+                    return <Product product={product} status={isFav} key={product?.id}></Product>
                 })}
             </div>
         </>

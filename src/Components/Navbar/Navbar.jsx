@@ -20,7 +20,6 @@ const navigation = [
 export default function Navbar() {
   const { setIsUserLoggedIn, isUserLoggedIn } = useContext(AuthContext)
   const { cartCount } = useContext(CartCountContext);
-  console.log("ab", cartCount);
 
   let navigate = useNavigate();
   function logOut() {

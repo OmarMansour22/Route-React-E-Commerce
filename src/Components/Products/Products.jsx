@@ -2,54 +2,55 @@ import React, { useEffect, useState } from "react";
 import Product from "../Product/Product";
 import axios from "axios";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
+import { useQuery } from "react-query";
+import ScrollToTop from "../ScrollToTop/ScrollToTop";
 
 export default function Products() {
-    const [products, setProducts] = useState(null); 
-    const [filteredProducts, setFilteredProducts] = useState(null); 
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [favProducts, setFavProducts] = useState(new Set());
     const [searchQuery, setSearchQuery] = useState("");
 
-    async function getProducts() {
-        try {
-            let response = await axios.get("https://ecommerce.routemisr.com/api/v1/products");
-            setProducts(response.data.data);
-            setFilteredProducts(response.data.data); 
-        } catch (error) {
-            console.error("Error fetching products:", error);
-        }
+    function getProducts() {
+        return axios.get("https://ecommerce.routemisr.com/api/v1/products").then(response => response.data.data);
     }
 
-    async function favourite() {
-        try {
-            let { data } = await axios.get("https://ecommerce.routemisr.com/api/v1/wishlist", {
-                headers: { token: localStorage.getItem("token") },
-            });
-            const favIds = new Set(data?.data?.map((fav) => fav._id) || []);
-            setFavProducts(favIds);
-        } catch (error) {
-            console.error("Error fetching wishlist:", error);
-        }
+    let { data: products, isLoading: isLoadingProducts } = useQuery('products', getProducts, {
+        refetchInterval: 60000
+    })
+
+    function favourite() {
+        return axios.get("https://ecommerce.routemisr.com/api/v1/wishlist", {
+            headers: { token: localStorage.getItem("token") },
+        }).then(response => response.data.data);
     }
+
+    let { data: favouriteData, isLoading: isLoadingFavourite } = useQuery('favourite', favourite, {
+        refetchInterval: 60000
+    })
+
+    useEffect(() => {
+        if (favouriteData) {
+            setFavProducts(new Set(favouriteData?.map((fav) => fav._id) || []));
+        }
+    }, [favouriteData]);
+
 
     useEffect(() => {
         if (!products) return;
-        const filtered = products.filter((product) =>
-            product.title.toLowerCase().includes(searchQuery.toLowerCase())
+        const filtered = products?.filter((product) =>
+            product?.title?.toLowerCase().includes(searchQuery.toLowerCase())
         );
         setFilteredProducts(filtered);
     }, [searchQuery, products]);
 
-    useEffect(() => {
-        getProducts();
-        favourite();
-    }, []);
 
-    if (!products) {
+    if (isLoadingFavourite || isLoadingProducts) {
         return <LoadingScreen />;
     }
 
     return (
         <>
+            <ScrollToTop />
             <input
                 type="text"
                 placeholder="Search products..."
@@ -59,9 +60,9 @@ export default function Products() {
             />
 
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
-                {filteredProducts.length > 0 ? (
-                    filteredProducts.map((product) => {
-                        const isFav = favProducts.has(product.id) ? 1 : 0;
+                {filteredProducts?.length > 0 ? (
+                    filteredProducts?.map((product) => {
+                        const isFav = favProducts?.has(product.id) ? 1 : 0;
                         return <Product product={product} status={isFav} key={product.id} />;
                     })
                 ) : (

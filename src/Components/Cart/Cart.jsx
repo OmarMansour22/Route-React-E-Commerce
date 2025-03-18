@@ -4,92 +4,130 @@ import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import CartProduct from '../CartProduct/CartProduct';
 import { CartCountContext } from '../../Context/CartCountContext';
 import { Link } from 'react-router-dom';
+import { useQuery, useMutation } from 'react-query';
+import ScrollToTop from '../ScrollToTop/ScrollToTop';
+
 
 export default function Cart() {
-  const [cartProducts, setCartProducts] = useState({});
-  const [responded, setResponded] = useState(false);
-  const [updateResponse, setUpdateResponse] = useState(true);
   const [totalCartPrice, setTotalCartPrice] = useState();
-
   const { cartCount, setCartCount } = useContext(CartCountContext);
 
 
-  async function getUserCart() {
-    let { data } = await axios.get("https://ecommerce.routemisr.com/api/v1/cart", {
+  function getUserCart() {
+    return axios.get("https://ecommerce.routemisr.com/api/v1/cart", {
       headers: {
         token: localStorage.getItem("token")
       }
-    });
-    // console.log(data.data, 'all');
-    setCartProducts(data.data);
-    setTotalCartPrice(data.data.totalCartPrice);
-    // console.log(totalCartPrice);    
-    setResponded(true);
+    }).then(response => response.data.data);
   }
 
-  async function removeItem(productId) {
-    setCartCount(cartCount - 1);
-    let { data } = await axios.delete("https://ecommerce.routemisr.com/api/v1/cart/" + productId, {
-      headers: {
-        token: localStorage.getItem("token")
-      }
-    })
-    // setCartProducts(data.data);
-    setTotalCartPrice(data.data.totalCartPrice);
-    console.log(totalCartPrice);
-    setTimeout(() => {
-      setUpdateResponse(true);
-    }, 2000);
-  }
-
-  async function updateProductNumber(productId, count) {
-    if (!count) setCartCount(cartCount - 1);
-    let { data } = await axios.put("https://ecommerce.routemisr.com/api/v1/cart/" + productId, { count: count }, {
-      headers: {
-        token: localStorage.getItem("token")
-      }
-    })
-    // setCartProducts(data.data);
-    setTotalCartPrice(data.data.totalCartPrice)
-    setUpdateResponse(true);
-    // console.log(totalCartPrice);
-    // console.log("new", data.data);
-  }
-
-  async function clearCart() {
-    let { data } = await axios.delete("https://ecommerce.routemisr.com/api/v1/cart", {
-      headers: {
-        token: localStorage.getItem("token")
-      }
-    })
-    setUpdateResponse(true);
-    // console.log(totalCartPrice);
-    // console.log("clr", data);
-  }
+  let { data: cartProducts, isLoading: isLoadingUserCart, isFetching: isFetchingUserCart, refetch: refetchUserCart } = useQuery('userCart', getUserCart, {
+    refetchInterval: 60000
+  })
 
   useEffect(() => {
-    getUserCart();
-  }, [])
+    if (cartProducts) setTotalCartPrice(cartProducts.totalCartPrice)
+  }, [cartProducts])
 
-  if (!responded) {
+
+  const removeItemMutation = useMutation(
+    async (productId) => {
+      const { data } = await axios.delete(`https://ecommerce.routemisr.com/api/v1/cart/${productId}`, {
+        headers: { token: localStorage.getItem("token") }
+      });
+      return data;
+    },
+    {
+      onSuccess: (data) => {
+        setTotalCartPrice(data.data.totalCartPrice);
+        setCartCount(prev => prev - 1);
+        refetchUserCart();
+      },
+      onError: (error) => {
+        console.error("Error removing item:", error);
+      }
+    }
+  );
+
+  const removeItem = (productId) => {
+    removeItemMutation.mutate(productId);
+  };
+
+  const updateProductNumberMutation = useMutation(
+    async ({ productId, count }) => {
+      const { data } = await axios.put(
+        `https://ecommerce.routemisr.com/api/v1/cart/${productId}`,
+        { count },
+        {
+          headers: { token: localStorage.getItem("token") },
+        }
+      );
+      return data;
+    },
+    {
+      onSuccess: (data) => {
+        setTotalCartPrice(data.data.totalCartPrice);
+        refetchUserCart();
+      },
+      onError: (error) => {
+        console.error("Error updating product quantity:", error);
+      },
+    }
+  );
+
+  const updateProductNumber = (productId, count) => {
+    updateProductNumberMutation.mutate({ productId, count });
+  };
+
+
+  const clearCartMutation = useMutation(
+    async () => {
+      const { data } = await axios.delete("https://ecommerce.routemisr.com/api/v1/cart", {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      });
+      return data;
+    },
+    {
+      onSuccess: () => {
+        setTotalCartPrice(0);
+        setCartCount(0);
+        refetchUserCart();
+      },
+      onError: (error) => {
+        console.error("Error clearing cart:", error);
+      },
+    }
+  );
+
+  const clearCart = () => {
+    clearCartMutation.mutate();
+  };
+
+
+  const isFetchingCart = isFetchingUserCart || removeItemMutation.isLoading || clearCartMutation.isLoading || updateProductNumberMutation.isLoading;
+
+
+  if (isLoadingUserCart) {
     return <LoadingScreen />;
   }
 
 
   return (
     <>
+      <ScrollToTop />
       {cartCount ?
         <div className='py-10 rounded-md'>
-          <button disabled={!cartCount} onClick={() => {
-            setUpdateResponse(false);
-            setCartProducts([]);
+          <button disabled={isFetchingCart} onClick={() => {
+            refetchUserCart();
             setTotalCartPrice(0);
             setCartCount(0);
             clearCart();
-          }} className={`text-red-500 dark:border-red-600 text-xl border px-5 py-1 rounded-md ms-auto me-1 md:me-10 block hover:bg-red-500 hover:text-white duration-300${!cartCount ? 'cursor-pointer' : 'cursor-auto'}`}>Clear Cart</button>
+          }} className={`text-red-500 dark:border-red-600 text-xl border px-5 py-1 rounded-md ms-auto me-1 md:me-10 block hover:bg-red-500 hover:text-white duration-300 ${isFetchingCart ? 'cursor-auto' : 'cursor-pointer'}`}>Clear Cart</button>
           <div className='w-full md:px-10'>
             {cartProducts?.products?.map((product) => {
-              return <CartProduct key={product._id} product={product} removeItem={removeItem} updateProductNumber={updateProductNumber} setUpdateResponse={setUpdateResponse} />
+              return <CartProduct key={product?._id} product={product} removeItem={removeItem} updateProductNumber={updateProductNumber} />
             })}
           </div>
           <div className="mt-10 md:mx-10 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-100 dark:bg-neutral-800 p-6 rounded-lg shadow-md">
@@ -97,15 +135,15 @@ export default function Cart() {
               Total Price:
               <span className="text-main text-3xl font-bold ml-2">
                 {totalCartPrice}
-                {!updateResponse && <i className="fas fa-spinner fa-spin ml-2 text-gray-600"></i>}
+                {isFetchingCart && <i className="fas fa-spinner fa-spin ml-2 text-gray-600"></i>}
               </span>
             </p>
 
             <Link
-              to={'/address/' + cartProducts._id}
-              className={`text-white text-xl font-medium px-6 py-3 rounded-lg shadow-md transition-all duration-300 ${updateResponse
-                  ? 'bg-main hover:bg-blue-800 cursor-pointer'
-                  : 'bg-gray-400 cursor-not-allowed'
+              to={'/address/' + cartProducts?._id}
+              className={`text-white text-xl font-medium px-6 py-3 rounded-lg shadow-md transition-all duration-300 ${!isFetchingCart
+                ? 'bg-main hover:bg-blue-800 cursor-pointer'
+                : 'bg-gray-400 cursor-not-allowed pointer-events-none'
                 }`}>
               Checkout
             </Link>

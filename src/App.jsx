@@ -19,6 +19,7 @@ import Address from './Components/Address/Address'
 import Orders from './Components/Orders/Orders'
 import Products from './Components/Products/Products'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 
 
@@ -53,6 +54,7 @@ function App() {
             <RouterProvider router={router} /> <ToastContainer />
           </CartCountContextProvider>
         </AuthContextProvider>
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </>
   )
