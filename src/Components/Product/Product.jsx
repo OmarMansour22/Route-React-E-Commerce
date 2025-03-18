@@ -148,8 +148,6 @@ export default function Product({ product, status, onWishlistUpdate }) {
                     }} className={`hover:text-yellow-400 hover:transition-all hover:duration-200 cursor-pointer ${isFavourite ? 'text-yellow-400' : 'text-gray-300 '}`}><i className="fa-solid fa-heart fa-2x"></i></button>
                 </div>
             </div>
-            {/* {console.log(product)} */}
-            {/* {console.log(addToCart)} */}
         </>
 
     )

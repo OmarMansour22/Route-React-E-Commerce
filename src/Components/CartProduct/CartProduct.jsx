@@ -29,9 +29,6 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
             refetchOnWindowFocus: false,
             enabled: !!product?.product?.id,
             onSuccess: (updatedProduct) => {
-                console.log(updatedProduct?.price);
-                console.log(product?.price, "product?.price");
-
                 if (updatedProduct?.price !== product?.price) {
                     toast.info(`Price updated: ${updatedProduct?.price} EGP`, { autoClose: 2000 });
                     updateProductNumber(product?.product?.id, count);
