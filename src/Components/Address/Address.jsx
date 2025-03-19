@@ -86,10 +86,14 @@ export default function Address() {
         }
 
         try {
-            const { data } = await axios.post(`https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=https://omarmansour22.github.io/Route-React-E-Commerce/#`,
+            const encodedUrl = encodeURIComponent("https://omarmansour22.github.io/Route-React-E-Commerce/#/allorders");
+
+            const { data } = await axios.post(
+                `https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=${encodedUrl}`,
                 { shippingAddress: selectedAddress },
                 { headers: { token } }
             );
+
             window.open(data.session.url, "_blank");
         } catch (error) {
             console.error("Error during checkout:", error);
