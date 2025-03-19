@@ -99,7 +99,6 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
             setCount((prev) => prev - 1);
             scheduleUpdate();
         } else {
-            setChanging(1);
             setCount(0);
             removeItem(product?.product?.id);
         }
