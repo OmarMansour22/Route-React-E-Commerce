@@ -86,7 +86,7 @@ export default function Address() {
         }
 
         try {
-            const encodedUrl = encodeURIComponent("https://omarmansour22.github.io/Route-React-E-Commerce/#/allorders");
+            const encodedUrl = encodeURIComponent("https://omarmansour22.github.io/Route-React-E-Commerce/#");
 
             const { data } = await axios.post(
                 `https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=${encodedUrl}`,
