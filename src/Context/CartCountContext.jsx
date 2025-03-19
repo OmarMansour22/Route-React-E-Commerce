@@ -19,15 +19,14 @@ export default function CartCountContextProvider({ children }) {
       })
       setCartCount(data.numOfCartItems);
       // console.log("here1", data.numOfCartItems);
-      // console.log("here2", cartCount);
     } catch (error) {
-
+      // console.log(error);
     }
   }
 
   useEffect(() => {
     if (isUserLoggedIn) getUserCart();
-  }, [])
+  }, [isUserLoggedIn])
 
 
 

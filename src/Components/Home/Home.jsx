@@ -6,13 +6,15 @@ import CategorieSlider from '../CategorySlider/CategorieSlider';
 import { useQuery } from 'react-query';
 import ScrollToTop from '../ScrollToTop/ScrollToTop';
 import { AuthContext } from '../../Context/AuthContext';
+import { CartCountContext } from '../../Context/CartCountContext';
 
 
 export default function Home() {
+  const [favProducts, setFavProducts] = useState(new Set());
+  const { isUserLoggedIn } = useContext(AuthContext);
+  const { setCartCount } = useContext(CartCountContext);
 
-  const [favProducts, setFavProducts] = useState(new Set())
-  const { isUserLoggedIn } = useContext(AuthContext)
-  
+
   function getProducts() {
     return axios.get("https://ecommerce.routemisr.com/api/v1/products").then(response => response.data.data);
   }
@@ -22,12 +24,12 @@ export default function Home() {
   })
 
   function favourite() {
-    return isUserLoggedIn && axios.get("https://ecommerce.routemisr.com/api/v1/wishlist", {
+    return isUserLoggedIn && (axios.get("https://ecommerce.routemisr.com/api/v1/wishlist", {
       headers: { token: localStorage.getItem("token") },
-    }).then(response => response.data.data);
+    }).then(response => response.data.data));
   }
 
-  let { data: favouriteData, isLoading: isLoadingFavourite } = useQuery('favourite', favourite, {
+  let { data: favouriteData, isLoading: isLoadingFavourite, refetch } = useQuery('favourite', favourite, {
     refetchInterval: 60000
   })
 
@@ -36,6 +38,10 @@ export default function Home() {
       setFavProducts(new Set(favouriteData?.map((fav) => fav._id) || []));
     }
   }, [favouriteData]);
+
+  useEffect(() => {
+    if (isUserLoggedIn) refetch();
+  }, [isUserLoggedIn])
 
 
   if ((isLoadingFavourite && isUserLoggedIn) || isLoadingProducts) {

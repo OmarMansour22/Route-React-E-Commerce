@@ -46,7 +46,7 @@ export default function Product({ product, status, onWishlistUpdate }) {
     );
 
     const addProductToCart = () => {
-        addProductToCartMutation.mutate(product.id);
+        addProductToCartMutation.mutate();
     };
 
     const isAddingToCart = addProductToCartMutation.isLoading;
@@ -147,7 +147,7 @@ export default function Product({ product, status, onWishlistUpdate }) {
                 </Link>
                 <div className="flex">
                     <button disabled={isAddingToCart} onClick={() => {
-                        isUserLoggedIn ? addProductToCart : navigate("/login")
+                        isUserLoggedIn ? addProductToCart() : navigate("/login")
                     }} className={`${isAddingToCart ? 'cursor-auto' : 'cursor-pointer'} w-full bg-white py-2 mr-2 rounded-lg text-white relative opacity-0 translate-y-full transition-all group-hover:opacity-100 group-hover:translate-y-0  group-hover:ease-in-out  group-hover:bottom-0 group-hover:bg-main  group-hover:duration-200 hover:bg-blue-700 hover:duration-100`}>Add to Cart{isAddingToCart && <i className="fas fa-spinner fa-spin  flex items-center justify-center py-1.5 px-1"></i>}</button>
                     <button onClick={() => {
                         if (isUserLoggedIn) isFavourite ? removeFromFavourite() : setToFavourite()

@@ -11,7 +11,8 @@ import ScrollToTop from '../ScrollToTop/ScrollToTop';
 export default function Cart() {
   const [totalCartPrice, setTotalCartPrice] = useState();
   const { cartCount, setCartCount } = useContext(CartCountContext);
-  const [checkPrice, setCheckPrice] = useState(0)
+  const [checkPrice, setCheckPrice] = useState(0);
+  const [changing, setChanging] = useState(0);
   const navigate = useNavigate();
 
 
@@ -41,9 +42,8 @@ export default function Cart() {
     },
     {
       onSuccess: (data) => {
-        setTotalCartPrice(data.data.totalCartPrice);
+        setTotalCartPrice(data?.data?.totalCartPrice);
         setCartCount(prev => prev - 1);
-        refetchUserCart();
       },
       onError: (error) => {
         console.error("Error removing item:", error);
@@ -68,18 +68,19 @@ export default function Cart() {
     },
     {
       onSuccess: (data) => {
-        setTotalCartPrice(data.data.totalCartPrice);
-        refetchUserCart();
+        refetchUserCart()
       },
       onError: (error) => {
         console.error("Error updating product quantity:", error);
       },
+
     }
   );
 
   const updateProductNumber = (productId, count) => {
     updateProductNumberMutation.mutate({ productId, count });
   };
+
 
 
   const clearCartMutation = useMutation(
@@ -108,13 +109,16 @@ export default function Cart() {
   };
 
 
-  const isFetchingCart = isFetchingUserCart || removeItemMutation.isLoading || clearCartMutation.isLoading || updateProductNumberMutation.isLoading;
+  const isFetchingCart = isFetchingUserCart || removeItemMutation.isLoading || clearCartMutation.isLoading || updateProductNumberMutation.isLoading || changing;
+
+
 
   const handleCheckout = async () => {
     await refetchUserCart();
     navigate(`/address/${cartProducts?._id}`);
     setCheckPrice(0);
   };
+
 
   if (isLoadingUserCart) {
     return <LoadingScreen />;
@@ -134,7 +138,7 @@ export default function Cart() {
           }} className={`text-red-500 dark:border-red-600 text-xl border px-5 py-1 rounded-md ms-auto me-1 md:me-10 block hover:bg-red-500 hover:text-white duration-300 ${isFetchingCart ? 'cursor-auto' : 'cursor-pointer'}`}>Clear Cart</button>
           <div className='w-full md:px-10'>
             {cartProducts?.products?.map((product) => {
-              return <CartProduct key={product?._id} product={product} removeItem={removeItem} updateProductNumber={updateProductNumber} checkPrice={checkPrice} />
+              return <CartProduct key={product?._id} product={product} removeItem={removeItem} updateProductNumber={updateProductNumber} checkPrice={checkPrice} setChanging={setChanging} />
             })}
           </div>
           <div className="mt-10 md:mx-10 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-100 dark:bg-neutral-800 p-6 rounded-lg shadow-md">
@@ -142,7 +146,7 @@ export default function Cart() {
               Total Price:
               <span className="text-main text-3xl font-bold ml-2">
                 {totalCartPrice}
-                {isFetchingCart && <i className="fas fa-spinner fa-spin ml-2 text-gray-600"></i>}
+                {isFetchingCart ? <i className="fas fa-spinner fa-spin ml-2 text-gray-600"></i> : null}
               </span>
             </p>
 
