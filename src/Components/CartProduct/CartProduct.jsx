@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function CartProduct({ product, removeItem, updateProductNumber, checkPrice, setChanging }) {
     const [count, setCount] = useState(Math.min(product?.count, product?.product?.quantity));
@@ -106,8 +107,8 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
 
     return (
         <>
-            {count > 0 && (
-                <div className="w-full my-5 shadow-card dark:shadow-darkCard flex justify-between rounded-md overflow-hidden">
+            {count > 0 ? (
+                <Link to={"/productDetails/" + product?.product?.id + "/" + product?.product?.category?._id} className="w-full my-5 shadow-card dark:shadow-darkCard flex justify-between rounded-md overflow-hidden">
                     <div className="flex">
                         <img src={product?.product?.imageCover} alt="" className="w-28 object-contain -ml-1" />
                         <div className="p-3">
@@ -133,8 +134,8 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
                             </button>
                         </div>
                     </div>
-                </div>
-            )}
+                </Link>
+            ) : null}
         </>
     );
 }
