@@ -108,8 +108,8 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
     return (
         <>
             {count > 0 ? (
-                <Link to={"/productDetails/" + product?.product?.id + "/" + product?.product?.category?._id} className="w-full my-5 shadow-card dark:shadow-darkCard flex justify-between rounded-md overflow-hidden">
-                    <div className="flex">
+                <div className="w-full my-5 shadow-card dark:shadow-darkCard flex justify-between rounded-md overflow-hidden">
+                    <Link to={"/productDetails/" + product?.product?.id + "/" + product?.product?.category?._id} className="flex">
                         <img src={product?.product?.imageCover} alt="" className="w-28 object-contain -ml-1" />
                         <div className="p-3">
                             <h2 className="font-bold">{product?.product?.title?.split(" ").slice(0, 2).join(" ")}</h2>
@@ -119,7 +119,7 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
                                 {product?.product?.ratingsAverage} <i className="fa-solid fa-star text-yellow-400"></i>
                             </p>
                         </div>
-                    </div>
+                    </Link>
                     <div className="flex flex-col justify-between items-center p-2">
                         <button onClick={() => { setCount(0); removeItem(product?.product?.id); }} className="cursor-pointer text-red-500 text-xl md:me-7">
                             Remove <i className="fa-solid fa-trash"></i>
@@ -134,7 +134,7 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
                             </button>
                         </div>
                     </div>
-                </Link>
+                </div>
             ) : null}
         </>
     );
