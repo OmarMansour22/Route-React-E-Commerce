@@ -6,7 +6,7 @@ export const AuthContext = createContext(false);
 
 export default function AuthContextProvider({ children }) {
 
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
     useEffect(() => {
         async function verifyUserToken() {
             let response = await axios.get("https://ecommerce.routemisr.com/api/v1/auth/verifyToken", {
@@ -15,10 +15,10 @@ export default function AuthContextProvider({ children }) {
                 }
             }).then(function (response) {
                 // console.log("Good");
-                setIsUserLoggedIn(true)
+                setIsUserLoggedIn(true);
             }).catch(function (error) {
                 console.log(error)
-                setIsUserLoggedIn(false)
+                setIsUserLoggedIn(false);
             });
         }
         if (localStorage.getItem("token")) {

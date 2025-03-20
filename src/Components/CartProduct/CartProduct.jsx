@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-export default function CartProduct({ product, removeItem, updateProductNumber, checkPrice, setChanging }) {
+export default function CartProduct({ product, removeItem, updateProductNumber, checkPrice, setChanging, changing}) {
     const [count, setCount] = useState(Math.min(product?.count, product?.product?.quantity));
     const [productLimit, setProductLimit] = useState(false);
     const timeoutRef = useRef(null);
@@ -39,7 +39,7 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
             onSuccess: (updatedProduct) => {
                 if (updatedProduct?.price !== product?.price) {
                     toast.info(`Price updated: ${updatedProduct?.price} EGP`, { autoClose: 2000 });
-                    updateProductNumber(product?.product?.id, latestCountRef.current);
+                   if(product?.product?.id) updateProductNumber(product?.product?.id, latestCountRef.current);
                 }
             },
         }
@@ -48,8 +48,7 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
     useEffect(() => {
         if (product?.count > product?.product?.quantity) {
             limitWarning();
-            updateProductNumber(product?.product?.id, product?.product?.quantity);
-            setChanging(0);
+            if(product?.product?.id)updateProductNumber(product?.product?.id, product?.product?.quantity);
         }
     }, [product?.count, product?.product?.quantity]);
 
@@ -64,8 +63,7 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
     const scheduleUpdate = () => {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = setTimeout(() => {
-            setChanging(0);
-            updateProductNumber(product?.product?.id, latestCountRef.current);
+            if(product?.product?.id)updateProductNumber(product?.product?.id, latestCountRef.current);
         }, 1000);
     };
 
@@ -74,7 +72,6 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
         return () => {
             if (timeoutRef.current) {
                 clearTimeout(timeoutRef.current);
-                updateProductNumber(product?.product?.id, latestCountRef.current);
             }
         };
     }, []);
@@ -121,7 +118,7 @@ export default function CartProduct({ product, removeItem, updateProductNumber, 
                         </div>
                     </Link>
                     <div className="flex flex-col justify-between items-center p-2">
-                        <button onClick={() => { setCount(0); removeItem(product?.product?.id); }} className="cursor-pointer text-red-500 text-xl md:me-7">
+                        <button onClick={() => { if(!changing) {setCount(0); removeItem(product?.product?.id);} }} className="cursor-pointer text-red-500 text-xl md:me-7">
                             Remove <i className="fa-solid fa-trash"></i>
                         </button>
                         <div className={`${productLimit ? "bg-gray-200" : "bg-gray-50"} flex items-center dark:bg-neutral-800 dark:border-neutral-600 p-1 justify-center mb-2 md:me-7 border-1 border-gray-300 rounded-md`}>

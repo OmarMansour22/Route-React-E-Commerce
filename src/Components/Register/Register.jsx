@@ -37,7 +37,7 @@ export default function Register() {
   async function onSubmit() {
     setIsLoading(true);
     setIsError(false);
-    let response = axios.post("https://ecommerce.routemisr.com/api/v1/auth/signup", formik.values)
+    let response = await axios.post("https://ecommerce.routemisr.com/api/v1/auth/signup", formik.values)
       .then(function (response) {
         setIsLoading(false);
         navigate("/login")

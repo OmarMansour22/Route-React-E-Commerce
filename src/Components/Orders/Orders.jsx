@@ -4,6 +4,7 @@ import axios from 'axios';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import ScrollToTop from '../ScrollToTop/ScrollToTop';
 import { useQuery } from 'react-query';
+import { Link } from 'react-router-dom';
 
 export default function Orders() {
     let userData = jwtDecode(localStorage.getItem("token"));
@@ -27,7 +28,7 @@ export default function Orders() {
                     <div className="bg-white h-screen -mt-20 flex items-center justify-center dark:bg-black">
                         <div className="px-4 mx-auto">
                             <div className="mx-auto max-w-screen-sm text-center">
-                                <h1 className="mb-4 text-3xl font-bold text-red-500">No Orders Found</h1>
+                                <h1 className="mb-4 text-3xl font-bold text-red-500">No orders found! Start shopping and place your first order now!</h1>
                                 <Link to="/" className="inline-flex text-white bg-primary-600 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center my-4 bg-main">Back to Homepage</Link>
                             </div>
                         </div>

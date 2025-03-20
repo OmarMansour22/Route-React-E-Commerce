@@ -6,6 +6,7 @@ import { CartCountContext } from '../../Context/CartCountContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from 'react-query';
 import ScrollToTop from '../ScrollToTop/ScrollToTop';
+import { toast } from 'react-toastify';
 
 
 export default function Cart() {
@@ -25,7 +26,8 @@ export default function Cart() {
   }
 
   let { data: cartProducts, isLoading: isLoadingUserCart, isFetching: isFetchingUserCart, refetch: refetchUserCart } = useQuery('userCart', getUserCart, {
-    refetchInterval: 60000
+    refetchInterval: 60000,
+    refetchOnWindowFocus: false,
   })
 
   useEffect(() => {
@@ -46,7 +48,11 @@ export default function Cart() {
         setCartCount(prev => prev - 1);
       },
       onError: (error) => {
-        console.error("Error removing item:", error);
+        refetchUserCart();
+        toast.error(`Error removing item: ${error}`, {
+          autoClose: 2000,
+          theme: localStorage.getItem("theme") === "light" ? "light" : "dark",
+        });
       }
     }
   );
@@ -68,10 +74,15 @@ export default function Cart() {
     },
     {
       onSuccess: (data) => {
-        refetchUserCart()
+        setTotalCartPrice(data?.data?.totalCartPrice);
+        setChanging(0);
       },
       onError: (error) => {
-        console.error("Error updating product quantity:", error);
+        refetchUserCart()
+        toast.error(`Error updating product quantity: ${error}`, {
+          autoClose: 2000,
+          theme: localStorage.getItem("theme") === "light" ? "light" : "dark",
+        });
       },
 
     }
@@ -99,7 +110,11 @@ export default function Cart() {
         refetchUserCart();
       },
       onError: (error) => {
-        console.error("Error clearing cart:", error);
+        refetchUserCart();
+        toast.error(`Error clearing cart: ${error}`, {
+          autoClose: 2000,
+          theme: localStorage.getItem("theme") === "light" ? "light" : "dark",
+        });
       },
     }
   );
@@ -138,7 +153,7 @@ export default function Cart() {
           }} className={`text-red-500 dark:border-red-600 text-xl border px-5 py-1 rounded-md ms-auto me-1 md:me-10 block hover:bg-red-500 hover:text-white duration-300 ${isFetchingCart ? 'cursor-auto' : 'cursor-pointer'}`}>Clear Cart</button>
           <div className='w-full md:px-10'>
             {cartProducts?.products?.map((product) => {
-              return <CartProduct key={product?._id} product={product} removeItem={removeItem} updateProductNumber={updateProductNumber} checkPrice={checkPrice} setChanging={setChanging} />
+              return <CartProduct key={product?._id} product={product} removeItem={removeItem} updateProductNumber={updateProductNumber} checkPrice={checkPrice} setChanging={setChanging} changing={changing} />
             })}
           </div>
           <div className="mt-10 md:mx-10 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-100 dark:bg-neutral-800 p-6 rounded-lg shadow-md">

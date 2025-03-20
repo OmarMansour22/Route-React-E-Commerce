@@ -19,6 +19,9 @@ import Address from './Components/Address/Address'
 import Orders from './Components/Orders/Orders'
 import Products from './Components/Products/Products'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import ForgotPassword from './Components/ForgotPassword/ForgotPassword'
+import VerifyResetCode from './Components/VerifyResetCode/VerifyResetCode'
+import UpdateUserPassword from './Components/UpdateUserPassword/UpdateUserPassword'
 // import { ReactQueryDevtools } from 'react-query/devtools'
 
 
@@ -31,6 +34,9 @@ function App() {
         { index: true, element: <Home /> },
         { path: 'login', element: <AuthProtectedRoute><Login /></AuthProtectedRoute> },
         { path: 'register', element: <AuthProtectedRoute><Register /></AuthProtectedRoute> },
+        { path: 'forgotPassword', element: <AuthProtectedRoute><ForgotPassword /></AuthProtectedRoute> },
+        { path: 'verifyResetCode', element: <AuthProtectedRoute><VerifyResetCode /></AuthProtectedRoute> },
+        { path: 'updateUserPassword', element: <AuthProtectedRoute><UpdateUserPassword /></AuthProtectedRoute> },
         { path: 'cart', element: <ProtectedRoute><Cart /></ProtectedRoute> },
         { path: 'wishList', element: <ProtectedRoute><WishList /></ProtectedRoute> },
         { path: 'categories', element: <ProtectedRoute><Categories /></ProtectedRoute> },
