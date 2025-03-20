@@ -18,7 +18,7 @@ export default function VerifyResetCode() {
     });
 
     const validationSchema = Yup.object({
-        resetCode: Yup.string().length(6, "Reset code must be exactly 6 digits.").required("Reset code is required."),
+        resetCode: Yup.string().required("Reset code is required."),
     });
 
     const formik = useFormik({
