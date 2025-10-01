@@ -1,54 +1,116 @@
-import { RouterProvider, createHashRouter } from 'react-router-dom'
-import Layout from './Components/Layout/Layout'
-import Cart from './Components/Cart/Cart'
-import WishList from './Components/WishList/WishList'
-import Categories from './Components/Categories/Categories'
-import Home from './Components/Home/Home'
-import NotFound from './Components/NotFound/NotFound'
-import Login from './Components/Login/Login'
-import Register from './Components/Register/Register'
-import 'flowbite-react'
-import AuthContextProvider from './Context/AuthContext'
-import ProtectedRoute from './Components/Guards/ProtectedRoute/ProtectedRoute'
-import AuthProtectedRoute from './Components/Guards/AuthProthectedRoute/AuthProtectedRoute'
-import ProductDetails from './Components/ProductDetails/ProductDetails'
-import CategoryDetails from './Components/CategoryDetails/CategoryDetails'
-import { ToastContainer } from 'react-toastify';
-import CartCountContextProvider from './Context/CartCountContext'
-import Address from './Components/Address/Address'
-import Orders from './Components/Orders/Orders'
-import Products from './Components/Products/Products'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import ForgotPassword from './Components/ForgotPassword/ForgotPassword'
-import VerifyResetCode from './Components/VerifyResetCode/VerifyResetCode'
-import UpdateUserPassword from './Components/UpdateUserPassword/UpdateUserPassword'
+import { RouterProvider, createHashRouter } from "react-router-dom";
+import "flowbite-react";
+import { ToastContainer } from "react-toastify";
+import { QueryClient, QueryClientProvider } from "react-query";
+import Layout from "./Components/Layout/Layout";
+import Home from "./Pages/Home/Home";
+import Login from "./Pages/Login/Login";
+import AuthProtectedRoute from "./Guards/AuthProthectedRoute/AuthProtectedRoute";
+import Register from "./Pages/Register/Register";
+import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
+import VerifyResetCode from "./Pages/VerifyResetCode/VerifyResetCode";
+import UpdateUserPassword from "./Pages/UpdateUserPassword/UpdateUserPassword";
+import ProtectedRoute from "./Guards/ProtectedRoute/ProtectedRoute";
+import WishList from "./Pages/WishList/WishList";
+import Categories from "./Pages/Categories/Categories";
+import Products from "./Pages/Products/Products";
+import Orders from "./Pages/Orders/Orders";
+import ProductDetails from "./Pages/ProductDetails/ProductDetails";
+import CategoryDetails from "./Pages/CategoryDetails/CategoryDetails";
+import Address from "./Pages/Address/Address";
+import NotFound from "./Pages/NotFound/NotFound";
+import Cart from "./Pages/Cart/Cart";
+import AuthContextProvider from "./Context/AuthContext";
+import CartCountContextProvider from "./Context/CartCountContext";
 // import { ReactQueryDevtools } from 'react-query/devtools'
 
-
-
 function App() {
-
   const router = createHashRouter([
     {
-      path: '', element: <Layout />, children: [
+      path: "",
+      element: <Layout />,
+      children: [
         { index: true, element: <Home /> },
-        { path: 'login', element: <AuthProtectedRoute><Login /></AuthProtectedRoute> },
-        { path: 'register', element: <AuthProtectedRoute><Register /></AuthProtectedRoute> },
-        { path: 'forgotPassword', element: <AuthProtectedRoute><ForgotPassword /></AuthProtectedRoute> },
-        { path: 'verifyResetCode', element: <AuthProtectedRoute><VerifyResetCode /></AuthProtectedRoute> },
-        { path: 'updateUserPassword', element: <AuthProtectedRoute><UpdateUserPassword /></AuthProtectedRoute> },
-        { path: 'cart', element: <ProtectedRoute><Cart /></ProtectedRoute> },
-        { path: 'wishList', element: <ProtectedRoute><WishList /></ProtectedRoute> },
-        { path: 'categories', element: <ProtectedRoute><Categories /></ProtectedRoute> },
-        { path: 'products', element: <ProtectedRoute><Products /></ProtectedRoute> },
-        { path: 'allorders', element: <ProtectedRoute><Orders /></ProtectedRoute> },
-        { path: 'productDetails/:id/:categoryId', element: <ProtectedRoute><ProductDetails /></ProtectedRoute> },
-        { path: 'categoryDetails/:categoryId', element: <ProtectedRoute><CategoryDetails /></ProtectedRoute> },
-        { path: 'address/:cartId', element: <ProtectedRoute><Address /></ProtectedRoute> },
-        { path: '*', element: <NotFound /> },
-      ]
+        {
+          path: "login",
+          element: (
+            <AuthProtectedRoute>
+              <Login />
+            </AuthProtectedRoute>
+          ),
+        },
+        {
+          path: "register",
+          element: (
+            <AuthProtectedRoute>
+              <Register />
+            </AuthProtectedRoute>
+          ),
+        },
+        {
+          path: "forgotPassword",
+          element: (
+            <AuthProtectedRoute>
+              <ForgotPassword />
+            </AuthProtectedRoute>
+          ),
+        },
+        {
+          path: "verifyResetCode",
+          element: (
+            <AuthProtectedRoute>
+              <VerifyResetCode />
+            </AuthProtectedRoute>
+          ),
+        },
+        {
+          path: "updateUserPassword",
+          element: (
+            <AuthProtectedRoute>
+              <UpdateUserPassword />
+            </AuthProtectedRoute>
+          ),
+        },
+        {
+          path: "cart",
+          element: (
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "wishList",
+          element: (
+            <ProtectedRoute>
+              <WishList />
+            </ProtectedRoute>
+          ),
+        },
+        { path: "categories", element: <Categories /> },
+        { path: "products", element: <Products /> },
+        {
+          path: "allorders",
+          element: (
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          ),
+        },
+        { path: "productDetails/:id/:categoryId", element: <ProductDetails /> },
+        { path: "categoryDetails/:categoryId", element: <CategoryDetails /> },
+        {
+          path: "address/:cartId",
+          element: (
+            <ProtectedRoute>
+              <Address />
+            </ProtectedRoute>
+          ),
+        },
+        { path: "*", element: <NotFound /> },
+      ],
     },
-  ])
+  ]);
 
   let queryClient = new QueryClient();
 
@@ -63,7 +125,7 @@ function App() {
         {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

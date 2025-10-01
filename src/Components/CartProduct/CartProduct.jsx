@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import axios from "axios";

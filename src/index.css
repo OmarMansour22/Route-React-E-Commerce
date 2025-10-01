@@ -2,22 +2,23 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-.active{
-  @apply  bg-main text-white;
+.active {
+  @apply bg-main text-white;
 }
-
 
 @theme {
-    --shadow-top-light: 0 -4px 10px rgba(0, 0, 0, 0.1);
-    --shadow-top-dark: 0 -10px 50px rgba(0,150,255, .1);
-    --shadow-card: rgba(0, 0, 0, 0.2) 3px 3px 8px, rgba(255, 255, 255, 0.6) -12px -12px 8px;
-    --shadow-darkCard:  0px 4px 12px rgba(0, 150, 255, 0.15),
+  --shadow-top-light: 0 -4px 10px rgba(0, 0, 0, 0.1);
+  --shadow-top-dark: 0 -10px 50px rgba(0, 150, 255, 0.1);
+  --shadow-card: rgba(0, 0, 0, 0.2) 3px 3px 8px,
+    rgba(255, 255, 255, 0.6) -12px -12px 8px;
+  --shadow-darkCard: 0px 4px 12px rgba(0, 150, 255, 0.15),
     0px 2px 6px rgba(0, 0, 0, 0.4);
 
-    --color-main: #2571f4;
-    --color-secondary: #64B5F6;
-    --color-hover: #42A5F5;
+  --color-main: #2571f4;
+  --color-secondary: #64b5f6;
+  --color-hover: #42a5f5;
 }
+
 @layer base {
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {

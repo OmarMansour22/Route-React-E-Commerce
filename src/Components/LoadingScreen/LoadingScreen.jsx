@@ -1,4 +1,3 @@
-import React from 'react'
 import style from './LoadingScreen.module.css'
 import ScrollToTop from '../ScrollToTop/ScrollToTop'
 
